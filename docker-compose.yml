@@ -12,7 +12,7 @@ services:
     ports:
       - ${MYSQL_HOST_PORT}:${MYSQL_CONTAINER_PORT}
     volumes:
-      - dbdata:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
       # arquivos .sql/.sql.gz desta pasta rodam UMA vez, na criação do banco
       - ./db-init:/docker-entrypoint-initdb.d:ro
     networks:
@@ -26,8 +26,10 @@ services:
       start_period: 30s
 
   backend:
-    build: ./backend
-    env_file: .env
+    build: 
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    # env_file: .env
     ports:
       - "5000:5000"
     restart: unless-stopped
@@ -43,6 +45,9 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
+    networks:
+      - app_network
+      - database_network
     # Não publica porta: só o nginx do frontend enxerga o backend.
     # Descomente apenas se o backend precisar ler a leitora serial NO servidor
     # (hoje a leitura é feita pelo processo local em 127.0.0.1:8000, então não precisa):
@@ -67,7 +72,17 @@ services:
       # ajuda bastante em Linux/WSL para o watcher
       CHOKIDAR_USEPOLLING: "true"
       REACT_APP_DATABASE_URL: ${REACT_APP_DATABASE_URL}
+    networks:
+      - app_network
 
 volumes:
   mysql_data:
   frontend_node_modules:
+
+networks:
+  app_network:
+    driver: bridge
+
+  database_network:
+    driver: bridge
+    internal: true
