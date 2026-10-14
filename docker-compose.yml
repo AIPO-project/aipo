@@ -1,17 +1,22 @@
 services:
-  db:
+  mysql:
     image: mysql:8.0
+    container_name: mysql_aipo
     restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-      TZ: America/Fortaleza
+      TZ: ${TZ}
+    ports:
+      - ${MYSQL_HOST_PORT}:${MYSQL_CONTAINER_PORT}
     volumes:
       - dbdata:/var/lib/mysql
       # arquivos .sql/.sql.gz desta pasta rodam UMA vez, na criação do banco
       - ./db-init:/docker-entrypoint-initdb.d:ro
+    networks:
+      - database_network
 
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
@@ -22,15 +27,21 @@ services:
 
   backend:
     build: ./backend
-    restart: unless-stopped
     env_file: .env
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
     environment:
-      # sobrescreve o que estiver no .env: dentro do compose o banco é o serviço "db"
-      MYSQL_HOST: db
-      MYSQL_PORT: "3306"
-      TZ: America/Fortaleza
+      
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_PORT: ${MYSQL_CONTAINER_PORT}
+      MYSQL_HOST: ${MYSQL_HOST}
+
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
     depends_on:
-      db:
+      mysql:
         condition: service_healthy
     # Não publica porta: só o nginx do frontend enxerga o backend.
     # Descomente apenas se o backend precisar ler a leitora serial NO servidor
