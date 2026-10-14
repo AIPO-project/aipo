@@ -1,0 +1,16 @@
+.env
+certs/
+db-init/*.sql
+db-init/*.sql.gz
+
+db-init/README.md
+
+frontend.old/.dockerignore
+
+frontend.old/Dockerfile
+
+frontend.old/nginx-ssl.conf
+
+frontend.old/nginx.conf
+
+frontend.old/src/serverAddress.js
