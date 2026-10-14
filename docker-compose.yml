@@ -12,6 +12,7 @@ services:
       - dbdata:/var/lib/mysql
       # arquivos .sql/.sql.gz desta pasta rodam UMA vez, na criação do banco
       - ./db-init:/docker-entrypoint-initdb.d:ro
+
     healthcheck:
       test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
       interval: 10s
@@ -38,17 +39,24 @@ services:
     #   - /dev/ttyUSB0:/dev/ttyUSB0
 
   frontend:
-    build: ./frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
     restart: unless-stopped
     depends_on:
       - backend
     ports:
-      - "80:80"
+      - "3000:3000"
       # Para HTTPS, veja frontend/nginx-ssl.conf e o bloco "volumes" comentado abaixo
       # - "443:443"
-    # volumes:
-    #   - ./certs:/etc/nginx/certs:ro
-    #   - ./frontend/nginx-ssl.conf:/etc/nginx/conf.d/default.conf:ro
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    environment:
+      # ajuda bastante em Linux/WSL para o watcher
+      CHOKIDAR_USEPOLLING: "true"
+      REACT_APP_DATABASE_URL: ${REACT_APP_DATABASE_URL}
 
 volumes:
-  dbdata:
+  mysql_data:
+  frontend_node_modules:
