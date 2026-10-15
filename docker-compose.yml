@@ -58,9 +58,6 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.dev
-    restart: unless-stopped
-    depends_on:
-      - backend
     ports:
       - "3000:3000"
       # Para HTTPS, veja frontend/nginx-ssl.conf e o bloco "volumes" comentado abaixo
@@ -71,7 +68,10 @@ services:
     environment:
       # ajuda bastante em Linux/WSL para o watcher
       CHOKIDAR_USEPOLLING: "true"
-      REACT_APP_DATABASE_URL: ${REACT_APP_DATABASE_URL}
+      REACT_APP_API_URL: ${REACT_APP_API_URL}
+    restart: unless-stopped
+    depends_on:
+      - backend
     networks:
       - app_network
 
