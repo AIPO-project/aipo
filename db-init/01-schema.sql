@@ -1,9 +1,9 @@
 -- AIPO: inicializacao idempotente do esquema (MySQL 8.0+)
 -- Execute com usuario autorizado a criar o banco e as tabelas.
 -- ATENCAO: IF NOT EXISTS nao atualiza estruturas ja existentes.
-CREATE DATABASE IF NOT EXISTS `aipo_04`
+CREATE DATABASE IF NOT EXISTS `aipo`
   CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-USE `aipo_04`;
+USE `aipo`;
 
 CREATE TABLE IF NOT EXISTS `usuarios` (
   `id` int NOT NULL AUTO_INCREMENT,
