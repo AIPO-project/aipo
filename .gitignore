@@ -1,6 +1,6 @@
 .env
 certs/
-db-init/*.sql
+
 db-init/*.sql.gz
 
 db-init/README.md
