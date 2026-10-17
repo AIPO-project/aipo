@@ -58,7 +58,7 @@ services:
   frontend:
     build:
       context: ./frontend
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
     ports:
       - "3000:3000"
       # Para HTTPS, veja frontend/nginx-ssl.conf e o bloco "volumes" comentado abaixo
