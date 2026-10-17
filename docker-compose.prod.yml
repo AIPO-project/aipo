@@ -29,25 +29,26 @@ services:
     build: 
       context: ./backend
       dockerfile: Dockerfile.dev
-    # env_file: .env
-    ports:
-      - "5000:5000"
+
     restart: unless-stopped
-    environment:
-      
+    
+    environment:  
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_PORT: ${MYSQL_CONTAINER_PORT}
       MYSQL_HOST: ${MYSQL_HOST}
-
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+
     depends_on:
       mysql:
         condition: service_healthy
     networks:
-      - app_network
-      - database_network
+      app_network:
+      database_network:
+      proxy_net:
+        aliases:
+          - aipo-backend
     # Não publica porta: só o nginx do frontend enxerga o backend.
     # Descomente apenas se o backend precisar ler a leitora serial NO servidor
     # (hoje a leitura é feita pelo processo local em 127.0.0.1:8000, então não precisa):
@@ -73,7 +74,7 @@ services:
     depends_on:
       - backend
     networks:
-      default:
+      app_network:
       proxy_net:
         aliases:
           - aipo-frontend
