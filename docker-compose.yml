@@ -25,6 +25,22 @@ services:
       retries: 10
       start_period: 30s
 
+  mqtt-broker:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    restart: unless-stopped
+
+    ports:
+      - "1883:1883"
+
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+
+    networks:
+      - app_network
+
   backend:
     build: 
       context: ./backend
@@ -42,6 +58,7 @@ services:
       MYSQL_HOST: ${MYSQL_HOST}
 
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      MQTT_API_TOKEN: ${MQTT_API_TOKEN}
     depends_on:
       mysql:
         condition: service_healthy
@@ -75,8 +92,42 @@ services:
     networks:
       - app_network
 
+  mqtt-service:
+    build:
+      context: ./mqttService
+      dockerfile: Dockerfile.dev
+
+    container_name: aipo_mqtt_service
+
+    restart: unless-stopped
+
+    environment:
+      MQTT_BROKER: ${MQTT_BROKER_SECONDARY_HOST}
+      MQTT_LOGIN: ${MQTT_USERNAME}
+      MQTT_PASSWORD: ${MQTT_PASSWORD}
+      MQTT_TOPIC_ACESSO: ${MQTT_TOPIC_ACESSO}
+      MQTT_API_TOKEN: ${MQTT_API_TOKEN}
+
+      # MYSQL_HOST: mysql
+      # MYSQL_PORT: 3306
+      # MYSQL_DATABASE: ${MYSQL_DATABASE}
+      # MYSQL_USER: ${MYSQL_USER}
+      # MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+
+      PYTHONUNBUFFERED: "1"
+
+    depends_on:
+      - mqtt-broker
+
+
+    networks:
+      - database_network
+      - app_network
+
 volumes:
   mysql_data:
+  mosquitto_data:
+  mosquitto_log:
   frontend_node_modules:
 
 networks:
