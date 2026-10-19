@@ -8,13 +8,15 @@ services:
     restart: unless-stopped
     
     environment:  
+
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
       MYSQL_PORT: ${MYSQL_CONTAINER_PORT}
       MYSQL_HOST: ${MYSQL_HOST}
-      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      MQTT_API_TOKEN: ${MQTT_API_TOKEN}
     networks:
       app_network:
       database_network:
@@ -31,16 +33,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile.prod
-    ports:
-      - "3000:3000"
-      # Para HTTPS, veja frontend/nginx-ssl.conf e o bloco "volumes" comentado abaixo
-      # - "443:443"
-    volumes:
-      - ./frontend:/app
-      - frontend_node_modules:/app/node_modules
     environment:
-      # ajuda bastante em Linux/WSL para o watcher
-      CHOKIDAR_USEPOLLING: "true"
       REACT_APP_API_URL: ${REACT_APP_API_URL}
     restart: unless-stopped
     depends_on:
@@ -50,10 +43,6 @@ services:
       proxy_net:
         aliases:
           - aipo-frontend
-
-volumes:
-  mysql_data:
-  frontend_node_modules:
 
 networks:
   app_network:
