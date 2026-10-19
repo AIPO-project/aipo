@@ -44,6 +44,30 @@ services:
         aliases:
           - aipo-frontend
 
+  mqtt-service:
+    build:
+      context: ./mqttService
+      dockerfile: Dockerfile.dev
+
+    container_name: aipo_mqtt_service
+
+    restart: unless-stopped
+
+    environment:
+      MQTT_BROKER: ${MQTT_BROKER_SECONDARY_HOST}
+      MQTT_LOGIN: ${MQTT_USERNAME}
+      MQTT_PASSWORD: ${MQTT_PASSWORD}
+      MQTT_TOPIC_ACESSO: ${MQTT_TOPIC_ACESSO}
+      MQTT_API_TOKEN: ${MQTT_API_TOKEN}
+
+      PYTHONUNBUFFERED: "1"
+
+    depends_on:
+      - mqtt-broker
+
+    networks:
+      - app_network
+
 networks:
   app_network:
     driver: bridge
