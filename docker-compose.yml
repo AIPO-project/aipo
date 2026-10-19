@@ -58,6 +58,7 @@ services:
       MYSQL_HOST: ${MYSQL_HOST}
 
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+      MQTT_API_TOKEN: ${MQTT_API_TOKEN}
     depends_on:
       mysql:
         condition: service_healthy
