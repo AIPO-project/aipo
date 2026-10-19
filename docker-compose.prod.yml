@@ -1,29 +1,4 @@
 services:
-  # mysql:
-  #   image: mysql:8.0
-  #   container_name: mysql_aipo
-  #   restart: unless-stopped
-  #   environment:
-  #     MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-  #     MYSQL_DATABASE: ${MYSQL_DATABASE}
-  #     MYSQL_USER: ${MYSQL_USER}
-  #     MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-  #     TZ: ${TZ}
-  #   ports:
-  #     - ${MYSQL_HOST_PORT}:${MYSQL_CONTAINER_PORT}
-  #   volumes:
-  #     - mysql_data:/var/lib/mysql
-  #     # arquivos .sql/.sql.gz desta pasta rodam UMA vez, na criação do banco
-  #     - ./db-init:/docker-entrypoint-initdb.d:ro
-  #   networks:
-  #     - database_network
-
-  #   healthcheck:
-  #     test: ["CMD-SHELL", "mysqladmin ping -h localhost -uroot -p$$MYSQL_ROOT_PASSWORD --silent"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 10
-  #     start_period: 30s
 
   backend:
     build: 
@@ -40,9 +15,6 @@ services:
       MYSQL_HOST: ${MYSQL_HOST}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
 
-    # depends_on:
-    #   mysql:
-    #     condition: service_healthy
     networks:
       app_network:
       database_network:
