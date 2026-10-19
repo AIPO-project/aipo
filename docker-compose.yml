@@ -108,20 +108,12 @@ services:
       MQTT_TOPIC_ACESSO: ${MQTT_TOPIC_ACESSO}
       MQTT_API_TOKEN: ${MQTT_API_TOKEN}
 
-      # MYSQL_HOST: mysql
-      # MYSQL_PORT: 3306
-      # MYSQL_DATABASE: ${MYSQL_DATABASE}
-      # MYSQL_USER: ${MYSQL_USER}
-      # MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-
       PYTHONUNBUFFERED: "1"
 
     depends_on:
       - mqtt-broker
 
-
     networks:
-      - database_network
       - app_network
 
 volumes:
