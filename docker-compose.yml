@@ -25,6 +25,22 @@ services:
       retries: 10
       start_period: 30s
 
+  mqtt-broker:
+    image: eclipse-mosquitto:2
+    container_name: mosquitto
+    restart: unless-stopped
+
+    ports:
+      - "1883:1883"
+
+    volumes:
+      - ./mosquitto/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - mosquitto_data:/mosquitto/data
+      - mosquitto_log:/mosquitto/log
+
+    networks:
+      - app_network
+
   backend:
     build: 
       context: ./backend
@@ -77,6 +93,8 @@ services:
 
 volumes:
   mysql_data:
+  mosquitto_data:
+  mosquitto_log:
   frontend_node_modules:
 
 networks:
