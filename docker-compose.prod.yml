@@ -47,7 +47,7 @@ services:
   mqtt-service:
     build:
       context: ./mqttService
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
 
     container_name: aipo_mqtt_service
 
@@ -61,9 +61,6 @@ services:
       MQTT_API_TOKEN: ${MQTT_API_TOKEN}
 
       PYTHONUNBUFFERED: "1"
-
-    depends_on:
-      - mqtt-broker
 
     networks:
       - app_network
