@@ -8,7 +8,7 @@ services:
     restart: unless-stopped
     
     environment:  
-
+      TZ: ${TZ}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
       MYSQL_USER: ${MYSQL_USER}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
@@ -34,6 +34,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile.prod
     environment:
+      TZ: ${TZ}
       REACT_APP_API_URL: ${REACT_APP_API_URL}
     restart: unless-stopped
     depends_on:
@@ -54,6 +55,7 @@ services:
     restart: unless-stopped
 
     environment:
+      TZ: ${TZ}
       MQTT_BROKER: ${MQTT_BROKER_PRIMARY_HOST}
       MQTT_LOGIN: ${MQTT_USERNAME}
       MQTT_PASSWORD: ${MQTT_PASSWORD}
